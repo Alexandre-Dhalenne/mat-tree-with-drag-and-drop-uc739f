@@ -2,7 +2,7 @@ import {FlatTreeControl} from '@angular/cdk/tree';
 import {Component, Injectable} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
-import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 /**
  * File node data with nested structure.
@@ -188,7 +188,16 @@ export class TreeFlatOverviewExample {
   
     // ignore drops outside of the tree
     if (!event.isPointerOverContainer) return;
-
+    /////////////////////////////////////////////////////////////
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+    /////////////////////////////////////////////////////////////
     // construct a list of visible nodes, this will match the DOM.
     // the cdkDragDrop event.currentIndex jives with visible nodes.
     // it calls rememberExpandedTreeNodes to persist expand state
@@ -331,4 +340,5 @@ export class TreeFlatOverviewExample {
     }
     return null;
   }
+
 }
